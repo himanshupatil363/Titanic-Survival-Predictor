@@ -3,6 +3,7 @@ import { send } from '../helper'
 const Predict = () => {
     const [result,setResult]=useState({data:"",success:false})
     const [gender,setGender]=useState()
+    const [validation,setValidation]=useState({isEmpty:false,genderConflict:false,embarkedConflict:false})
     const [loader,setLoader]=useState(false)
     const [values,setValues] = useState({
         pId:"",
@@ -23,20 +24,35 @@ const Predict = () => {
       }
       const onSubmit = event => {
         event.preventDefault()
-        setLoader(true)
-        setResult({...values,success:false})
-        if(parseInt(sexMale)===1){
-          setGender("he")
+        if(pId==="" || pClass==="" || sexMale==="" || sexFemale==="" || age==="" || sibSp==="" || parch==="" || fare==="" || embarkedS==="" || embarkedC==="" || embarkedQ ==="")
+        { 
+          setValidation({...values,isEmpty:true})
+          setResult({...values,success:false})
         }
-        else if(parseInt(sexFemale)===1){
-          setGender("she") 
+        else if(parseInt(sexMale)===1 && parseInt(sexFemale)===1){
+          setValidation({...values,genderConflict:true})
+          setResult({...values,success:false})
         }
-        send({pId,pClass,sexMale,sexFemale,age,sibSp,parch,fare,embarkedS,embarkedC,embarkedQ})
-        .then(data=>{setResult(data)
-          setLoader(false)
-        })
-        .then(setValues({...values , pId:"",pClass:"",sexMale:"",sexFemale:"",age:"",sibSp:"",parch:"",fare:"",embarkedS:"",embarkedC:"",embarkedQ:""}))
-        .catch(err=>console.log(err))
+        else if(parseInt(embarkedS)+parseInt(embarkedC)+parseInt(embarkedQ)>1){
+          setValidation({...values,embarkedConflict:true})
+          setResult({...values,success:false})
+        }
+        else
+          {setLoader(true)
+          setValidation({...values,isEmpty:false,genderConflict:false,embarkedConflict:false})
+          setResult({...values,success:false})
+          if(parseInt(sexMale)===1){
+            setGender("he")
+          }
+          else if(parseInt(sexFemale)===1){
+            setGender("she") 
+          }
+          send({...values})
+          .then(data=>{setResult(data)
+            setLoader(false)
+          })
+          .then(setValues({...values , pId:"",pClass:"",sexMale:"",sexFemale:"",age:"",sibSp:"",parch:"",fare:"",embarkedS:"",embarkedC:"",embarkedQ:""}))
+          .catch(err=>console.log(err))}
       }
       const predictionResult = () =>{
         if(parseInt(result.data)===1){
@@ -76,6 +92,19 @@ const Predict = () => {
 
             <div className="text-center">
               {result.success && predictionResult()}
+              {
+                (
+                  validation.isEmpty && (
+                    <p className="text-xl text-red-500">Please enter all values</p>
+                  )
+                )||(
+                  validation.genderConflict && (
+                    <p className="text-xl text-red-500">Both genders cant be selected</p>)
+                )||(
+                  validation.embarkedConflict && (
+                    <p className="text-xl text-red-500">Only one embarked can be selected</p>
+                  )
+                )}
               {loader && loading()}
             </div>
         </div>
