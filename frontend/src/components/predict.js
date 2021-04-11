@@ -3,8 +3,10 @@ import { sendData } from "../helper/fetchrequest";
 const Predict = () => {
 	//for output of the data
 	const [result, setResult] = useState({ data: "", success: false });
+
 	//for checking whether the survivor is male or female
 	const [gender, setGender] = useState();
+
 	//for validating the form input
 	const [validation, setValidation] = useState({
 		isEmpty: false,
@@ -12,8 +14,10 @@ const Predict = () => {
 		embarkedConflict: false,
 		isNegative: false,
 	});
+
 	//for showing loader until we get response back
 	const [loader, setLoader] = useState(false);
+
 	//for storing input form data
 	const [values, setValues] = useState({
 		pId: "",
@@ -28,6 +32,7 @@ const Predict = () => {
 		embarkedC: "",
 		embarkedQ: "",
 	});
+
 	//destructured for the purpose of validation
 	const {
 		pId,
@@ -42,13 +47,16 @@ const Predict = () => {
 		embarkedC,
 		embarkedQ,
 	} = values;
+
 	//this is a dynamic function which will update the states when data is entered or updated in the input fields
 	const handleChange = (name) => (event) => {
 		setValues({ ...values, [name]: event.target.value });
 	};
+
 	//this will be called on submitting the form
 	const onSubmit = (event) => {
 		event.preventDefault();
+
 		//to check whether user has filled all fields or not
 		if (
 			pId === "" ||
@@ -66,6 +74,7 @@ const Predict = () => {
 			setValidation({ ...values, isEmpty: true });
 			setResult({ ...values, success: false });
 		}
+
 		//to check whether user has entered positive values
 		else if (
 			parseInt(pId) < 0 ||
@@ -83,16 +92,17 @@ const Predict = () => {
 			setValidation({ ...values, isNegative: true });
 			setResult({ ...values, success: false });
 		}
+
 		//to check whether user has selected atleast and only one gender
 		else if (
-      (parseInt(sexMale) === 1 && parseInt(sexFemale) === 1)
-      ||
-      (parseInt(sexMale) === 0 && parseInt(sexFemale) === 0)
-      ) 
-      {
-			  setValidation({ ...values, genderConflict: true });
-			  setResult({ ...values, success: false });
+      		(parseInt(sexMale) === 1 && parseInt(sexFemale) === 1)
+      		||
+      		(parseInt(sexMale) === 0 && parseInt(sexFemale) === 0)
+      	) {
+			setValidation({ ...values, genderConflict: true });
+			setResult({ ...values, success: false });
 		}
+
 		//to check whether user has selected atleast and only one embarked
 		else if (
 			(parseInt(embarkedS) + parseInt(embarkedC) + parseInt(embarkedQ) !== 1)
@@ -100,33 +110,40 @@ const Predict = () => {
 			setValidation({ ...values, embarkedConflict: true });
 			setResult({ ...values, success: false });
 		}
+
 		//if data passes above validate do this
 		else {
-      //starting the loader
+      		//starting the loader
 			setLoader(true);
-      //cleaning previous errors if any
+
+      		//cleaning previous errors if any
 			setValidation({
 				...values,
 				isEmpty: false,
 				genderConflict: false,
 				embarkedConflict: false,
 			});
-      //cleaning previous results if any
+
+      		//cleaning previous results if any
 			setResult({ ...values, success: false });
-      //checking gender
+
+      		//checking gender
 			if (parseInt(sexMale) === 1) {
 				setGender("he");
 			} else if (parseInt(sexFemale) === 1) {
 				setGender("she");
 			}
-      //sending data to helper for fetch request
+
+      		//sending data to helper for fetch request
 			sendData({ ...values })
-        //stoping the loader and updating the results
+
+        		//stoping the loader and updating the results
 				.then((data) => {
 					setResult(data);
 					setLoader(false);
 				})
-        //cleaning input field values
+
+        		//cleaning input field values
 				.then(
 					setValues({
 						...values,
@@ -165,13 +182,15 @@ const Predict = () => {
 				</div>
 			);
 		}
-    else{
-      <div className="font-semibold text-3xl text-red-500">
-					{result.data}
-			</div>
-    }
+    	else{
+			return(
+    	  		<div className="font-semibold text-3xl text-red-500">
+					Error : {result.data}
+				</div>
+			)
+    	}
 	};
-  //code for loader
+  	//code for loader
 	const loading = () => {
 		return (
 			<div className="text-3xl text-gray-400 font-semibold">Calculating...</div>
@@ -179,7 +198,7 @@ const Predict = () => {
 	};
 	return (
 		<div>
-      {/* input form */}
+      		{/* input form */}
 			<form className="flex flex-col items-center mt-10">
 				<div className="flex justify-center flex-wrap">
 					<input
@@ -270,13 +289,14 @@ const Predict = () => {
 					Predict
 				</button>
 			</form>
-      {/* displaying result/error  */}
+
+      		{/* displaying result/error  */}
 			<div className="text-center">
 				{result.success && predictionResult()}
 				{
-          (validation.isEmpty && (
-					<p className="text-xl text-red-500">Please enter all values</p>
-				  )) ||
+          			(validation.isEmpty && (
+						<p className="text-xl text-red-500">Please enter all values</p>
+				  	)) ||
 					(validation.genderConflict && (
 						<p className="text-xl text-red-500">Select atleast and only one gender</p>
 					)) ||
@@ -286,8 +306,9 @@ const Predict = () => {
 					(validation.isNegative && (
 						<p className="text-xl text-red-500">Values cant be negative</p>
 					))
-        }
-        {/* running loader if loading is true */}
+        		}
+
+        		{/* running loader if loading is true */}
 				{loader && loading()}
 			</div>
 		</div>
