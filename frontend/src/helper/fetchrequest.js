@@ -1,6 +1,6 @@
 import {API} from "../backend";
-
-export const send = info =>{
+//used for api calls to backend 
+export const sendData = info =>{
     return fetch(`${API}/`,{
         method:"POST",
         headers:{
@@ -12,5 +12,5 @@ export const send = info =>{
     .then(response=>{
         return response.json();
     })
-    .catch(err=> {return err});
+    .catch(err=> console.log(err));
 };
