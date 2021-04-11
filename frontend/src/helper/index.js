@@ -12,5 +12,5 @@ export const send = info =>{
     .then(response=>{
         return response.json();
     })
-    .catch(err=>console.log(err));
+    .catch(err=> {return err});
 };

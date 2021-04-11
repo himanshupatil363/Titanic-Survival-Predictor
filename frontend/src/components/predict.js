@@ -3,7 +3,7 @@ import { send } from '../helper'
 const Predict = () => {
     const [result,setResult]=useState({data:"",success:false})
     const [gender,setGender]=useState()
-    const [validation,setValidation]=useState({isEmpty:false,genderConflict:false,embarkedConflict:false})
+    const [validation,setValidation]=useState({isEmpty:false,genderConflict:false,embarkedConflict:false,isNegative:false})
     const [loader,setLoader]=useState(false)
     const [values,setValues] = useState({
         pId:"",
@@ -29,6 +29,11 @@ const Predict = () => {
           setValidation({...values,isEmpty:true})
           setResult({...values,success:false})
         }
+        else if(parseInt(pId)<0 || parseInt(pClass)<0 || parseInt(sexMale)<0 || parseInt(sexFemale)<0 || parseInt(age)<0 || parseInt(sibSp)<0 || parseInt(parch)<0 || parseInt(fare)<0 || parseInt(embarkedS)<0 || parseInt(embarkedC)<0 || parseInt(embarkedQ)<0)
+        { 
+          setValidation({...values,isNegative:true})
+          setResult({...values,success:false})
+        }
         else if(parseInt(sexMale)===1 && parseInt(sexFemale)===1){
           setValidation({...values,genderConflict:true})
           setResult({...values,success:false})
@@ -52,7 +57,9 @@ const Predict = () => {
             setLoader(false)
           })
           .then(setValues({...values , pId:"",pClass:"",sexMale:"",sexFemale:"",age:"",sibSp:"",parch:"",fare:"",embarkedS:"",embarkedC:"",embarkedQ:""}))
-          .catch(err=>console.log(err))}
+          .catch(err=>{setResult(err)
+            setLoader(false)
+          })}
       }
       const predictionResult = () =>{
         if(parseInt(result.data)===1){
@@ -83,9 +90,9 @@ const Predict = () => {
                 <input className="rounded-md focus:outline-none m-4 px-3 py-2" type="number" placeholder="sibSp" value={sibSp} onChange={handleChange("sibSp")}/>
                 <input className="rounded-md focus:outline-none m-4 px-3 py-2" type="number" placeholder="parch" value={parch} onChange={handleChange("parch")}/>
                 <input className="rounded-md focus:outline-none m-4 px-3 py-2" type="number" placeholder="fare" value={fare} onChange={handleChange("fare")}/>
-                <input className="rounded-md focus:outline-none m-4 px-3 py-2" type="number" placeholder="embarkedS" value={embarkedS} onChange={handleChange("embarkedS")}/>
-                <input className="rounded-md focus:outline-none m-4 px-3 py-2" type="number" placeholder="embarkedC" value={embarkedC} onChange={handleChange("embarkedC")}/>
-                <input className="rounded-md focus:outline-none m-4 px-3 py-2" type="number" placeholder="embarkedQ" value={embarkedQ} onChange={handleChange("embarkedQ")}/>
+                <input className="rounded-md focus:outline-none m-4 px-3 py-2" type="number" placeholder="embarkedS" value={embarkedS} max="1" onChange={handleChange("embarkedS")}/>
+                <input className="rounded-md focus:outline-none m-4 px-3 py-2" type="number" placeholder="embarkedC" value={embarkedC} max="1" onChange={handleChange("embarkedC")}/>
+                <input className="rounded-md focus:outline-none m-4 px-3 py-2" type="number" placeholder="embarkedQ" value={embarkedQ} max="1" onChange={handleChange("embarkedQ")}/>
             </div>
             <button onClick={onSubmit} className="my-20 px-8 py-2 text-xl rounded-md text-white bg-blue-900 focus:outline-none hover:bg-gray-100 hover:text-blue-900 duration-1000">Predict</button>
             </form>
@@ -99,11 +106,16 @@ const Predict = () => {
                   )
                 )||(
                   validation.genderConflict && (
-                    <p className="text-xl text-red-500">Both genders cant be selected</p>)
+                    <p className="text-xl text-red-500">Both genders cant be selected</p>
+                    )
                 )||(
                   validation.embarkedConflict && (
                     <p className="text-xl text-red-500">Only one embarked can be selected</p>
                   )
+                )||(
+                    validation.isNegative && (
+                      <p className="text-xl text-red-500">Values cant be negative</p>
+                    )
                 )}
               {loader && loading()}
             </div>

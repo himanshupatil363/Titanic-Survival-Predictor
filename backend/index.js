@@ -15,7 +15,7 @@ app.post('/',(req,res)=>{
         res.json({"data":data.toString(),"success":true})
     })
     pythonProcess.stderr.on('data',(err)=>{
-        console.log(`${err}`)
+        res.json({"data":err.toString()})
     })
 })
 app.listen(port, () => console.log(`Started server at http://localhost:${port}`));
