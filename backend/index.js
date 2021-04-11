@@ -16,7 +16,7 @@ app.post('/',(req,res)=>{
         res.json({"data":data.toString(),"success":true})
     })
     pythonProcess.stderr.on('data',(err)=>{
-        res.json({"data":err.toString()})
+        console.log(`${err}`)
     })
 })
 

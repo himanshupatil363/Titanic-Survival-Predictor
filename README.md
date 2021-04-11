@@ -39,12 +39,14 @@ This project is about predicting wheather the traveller will survive or not from
         ```
         cd..
         ```
-    - Then
+    - Then run
         ```
         cd backend
         npm install
+        cd ml
+        pip install -r requirements.txt
         ```
-
+    
 ## Running the predictor
 1. Go to the frontend folder directory and run
     ```
