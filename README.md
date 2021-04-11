@@ -25,3 +25,33 @@ This project is about predicting wheather the traveller will survive or not from
       └── package.json
     ├── .gitignore
     └── README.md
+## Setting up the project
+1. Clone the repository
+2. Open command prompt
+3. Go to the folder location of this repository
+4. Setup Frontend
+    ```
+    cd frontend
+    npm install
+    ```
+5. Setup Backend
+    - Go back to the project directory 
+        ```
+        cd..
+        ```
+    - Then
+        ```
+        cd backend
+        npm install
+        ```
+
+## Running the predictor
+1. Go to the frontend folder directory and run
+    ```
+    npm start
+    ```
+2. Go to the backend folder directory and run
+    ```
+    node index.js
+    ```
+
